@@ -96,11 +96,13 @@ export const conversationService = {
 
 // ─── Message endpoints ────────────────────────────────────────────────────────
 export const messageService = {
-  list:   (conversationId: string, page = 1, limit = 50) =>
+  list:     (conversationId: string, page = 1, limit = 50) =>
     api.get(`/api/conversations/${conversationId}/messages`, {
       params: { page, limit },
     }),
-  delete: (messageId: string) => api.delete(`/api/messages/${messageId}`),
+  delete:   (messageId: string) => api.delete(`/api/messages/${messageId}`),
+  markRead: (conversationId: string) =>
+    api.post(`/api/messages/${conversationId}/read`),
 };
 
 // ─── File endpoints ───────────────────────────────────────────────────────────

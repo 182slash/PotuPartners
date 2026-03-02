@@ -1,5 +1,12 @@
 import Link from 'next/link';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
+
+const SOCIALS = [
+  { name: 'Facebook',  href: 'https://www.facebook.com/share/1AzBkbF7nX/?mibextid=wwXIfr',  icon: Facebook },
+  { name: 'Instagram', href: 'https://www.instagram.com/potupartners?igsh=MTBhYzEyeHU5NnFqOA==', icon: Instagram },
+  { name: 'Twitter',   href: 'https://x.com/potupartners?s=11&t=sw-0qLGvFCGtvd6erCLotQ',   icon: Twitter },
+  { name: 'LinkedIn',  href: 'https://www.linkedin.com/in/potupartnerslawoffice?utm_source=share_via&utm_content=profile&utm_medium=member_ios',  icon: Linkedin },
+];
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -22,8 +29,22 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-text-secondary text-sm leading-relaxed font-light">
-              Premier legal counsel delivered with integrity, discretion, and uncompromising excellence.
+              Top-tier legal counsel delivered with integrity, discretion, and uncompromising excellence.
             </p>
+            <div className="mt-6 flex items-center gap-5">
+              {SOCIALS.map(social => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
+                  className="text-gold/70 hover:text-gold hover:filter-[drop-shadow(0_0_4px_rgba(212,175,55,0.7))] transition-all duration-300"
+                >
+                  <social.icon size={20} />
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Practice Areas */}
@@ -52,7 +73,6 @@ export default function Footer() {
                 { label: 'Vision',       href: '#vision' },
                 { label: 'Our Mission',  href: '#mission' },
                 { label: 'About Office', href: '#about' },
-                { label: 'Case Highlights', href: '#cases' },
                 { label: 'Our Partners', href: '#partners' },
               ].map(item => (
                 <li key={item.href}>
@@ -73,20 +93,20 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin size={14} className="text-gold mt-0.5 flex-shrink-0" />
                 <span className="text-text-secondary text-sm leading-relaxed">
-                  One Commerce Square, 18th Floor<br />
-                  City Centre, Metro District
+                  Ruko Mall 9K Puncak CBD, Jl. Keramat<br />
+                  Surabaya, Jawa Timur
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={14} className="text-gold flex-shrink-0" />
-                <a href="tel:+10000000000" className="text-text-secondary text-sm hover:text-gold transition-colors">
-                  +1 (000) 000-0000
+                <a href="tel:+6281216723060" className="text-text-secondary text-sm hover:text-gold transition-colors">
+                  +62 (812) 1672-3060
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={14} className="text-gold flex-shrink-0" />
-                <a href="mailto:counsel@potupartners.site" className="text-text-secondary text-sm hover:text-gold transition-colors">
-                  counsel@potupartners.site
+                <a href="mailto:potuandpartners@gmail.com" className="text-text-secondary text-sm hover:text-gold transition-colors">
+                  potuandpartners@gmail.com
                 </a>
               </li>
             </ul>
@@ -95,9 +115,10 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-text-muted text-xs tracking-wide">
-            © {year} PotuPartners. All rights reserved. Attorney advertising.
-          </p>
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-1 gap-y-1 text-text-muted text-xs tracking-wide">
+            <span>© {year} PotuPartners. All rights reserved. | Powered by</span>
+            <img src="/torch-logo.png" alt="Torch Logo" className="h-4 w-auto opacity-80" />
+          </div>
           <div className="flex items-center gap-6">
             <a href="#" className="text-text-muted text-xs hover:text-gold transition-colors">
               Privacy Policy

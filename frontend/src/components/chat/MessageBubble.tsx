@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Trash2, FileText, FileImage, Download, Bot } from 'lucide-react';
+import { Trash2, FileText, Download, Bot } from 'lucide-react';
 import { formatMessageTime, formatFileSize, isImageFile, cn } from '@/lib/utils';
 import type { Message } from '@/types';
 
@@ -11,6 +11,15 @@ interface MessageBubbleProps {
   isAiBot:       boolean;
   onDelete:      (id: string) => void;
   canDelete:     boolean;
+}
+
+// Helper: read sender name handling both camelCase and snake_case from API
+function getSenderName(sender: any): string {
+  return sender?.displayName ?? sender?.display_name ?? sender?.fullName ?? sender?.full_name ?? 'Staff';
+}
+
+function getSenderInitial(sender: any): string {
+  return (getSenderName(sender))[0] ?? '?';
 }
 
 export default function MessageBubble({
@@ -23,7 +32,12 @@ export default function MessageBubble({
   const [hovered,    setHovered]    = useState(false);
   const [delConfirm, setDelConfirm] = useState(false);
 
-  if (message.deletedAt) {
+  // Support both camelCase and snake_case fields from API
+  const deletedAt  = message.deletedAt  ?? (message as any).deleted_at;
+  const createdAt  = message.createdAt  ?? (message as any).created_at;
+  const isRead     = message.isRead     ?? (message as any).is_read;
+
+  if (deletedAt) {
     return (
       <div className={cn('flex', isOwn ? 'justify-end' : 'justify-start')}>
         <div className={cn(
@@ -59,29 +73,27 @@ export default function MessageBubble({
           {isAiBot
             ? <Bot size={12} className="text-gold" />
             : <span className="font-serif text-[0.55rem] text-gold">
-                {message.sender?.displayName?.[0] ?? '?'}
+                {getSenderInitial(message.sender)}
               </span>
           }
         </div>
       )}
 
       {/* Bubble */}
-      <div className={cn('flex flex-col gap-1', isOwn ? 'items-end' : 'items-start')}>
+      <div className={cn('flex flex-col gap-1 max-w-[70%] min-w-0', isOwn ? 'items-end' : 'items-start')}>
 
         {/* Sender name (incoming only) */}
         {!isOwn && (
           <span className="text-[0.6rem] tracking-wide text-text-muted font-sans px-1">
-            {isAiBot ? 'PotuPartners AI' : (message.sender?.displayName ?? message.sender?.fullName ?? 'Staff')}
+            {isAiBot ? 'PotuPartners AI' : getSenderName(message.sender)}
           </span>
         )}
 
         {/* Main bubble */}
-        <div
-          className={cn(
-            'message-bubble',
-            isOwn    ? 'outgoing' : isAiBot ? 'ai' : 'incoming',
-          )}
-        >
+        <div className={cn(
+          'message-bubble',
+          isOwn ? 'outgoing' : isAiBot ? 'ai' : 'incoming',
+        )}>
           {/* File attachments */}
           {message.files?.map(file => (
             <FilePreview key={file.id} file={file} />
@@ -97,8 +109,8 @@ export default function MessageBubble({
 
         {/* Timestamp */}
         <span className="text-[0.6rem] text-text-muted font-sans px-1">
-          {formatMessageTime(message.createdAt)}
-          {isOwn && message.isRead && (
+          {formatMessageTime(createdAt)}
+          {isOwn && isRead && (
             <span className="ml-1 text-gold opacity-60">✓</span>
           )}
         </span>
@@ -147,12 +159,11 @@ function FilePreview({ file }: { file: NonNullable<Message['files']>[number] }) 
   }
 
   const isPdf = file.mimeType.includes('pdf');
-  const Icon  = isPdf ? FileText : FileText;
 
   return (
     <div className="mb-2 flex items-center gap-2 p-2 border border-divider bg-surface-3 hover:border-gold-faint transition-colors max-w-[220px]">
       <div className="w-7 h-7 border border-divider flex items-center justify-center flex-shrink-0">
-        <Icon size={12} className={isPdf ? 'text-red-400' : 'text-blue-400'} />
+        <FileText size={12} className={isPdf ? 'text-red-400' : 'text-blue-400'} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-[0.65rem] text-text-primary truncate">{file.originalName}</p>

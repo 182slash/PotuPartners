@@ -4,9 +4,10 @@ import HeroSection   from '@/components/sections/Hero';
 import VisionSection from '@/components/sections/Vision';
 import MissionSection from '@/components/sections/Mission';
 import AboutSection  from '@/components/sections/AboutOffice';
-import CasesSection  from '@/components/sections/CaseHighlights';
+import CaseHighlightSection from '@/components/sections/CaseHighlights';
 import PartnersSection from '@/components/sections/Partners';
 import ServicesSection from '@/components/sections/Services';
+import ClientSection from '@/components/sections/Client';
 import ChatButton    from '@/components/chat/ChatButton';
 import ChatPanel     from '@/components/chat/ChatPanel';
 
@@ -33,15 +34,19 @@ export default function HomePage() {
 
         <div className="gold-rule-full" />
 
-        <CasesSection />
-
-        <div className="gold-rule-full" />
-
         <PartnersSection />
 
         <div className="gold-rule-full" />
 
         <ServicesSection />
+
+        <div className="gold-rule-full" />
+
+        <CaseHighlightSection />
+        
+        <div className="gold-rule-full" />
+
+        <ClientSection />
       </main>
 
       <Footer />

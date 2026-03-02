@@ -9,9 +9,9 @@ const NAV_LINKS = [
   { label: 'Vision',      href: '#vision' },
   { label: 'Mission',     href: '#mission' },
   { label: 'Our Office',  href: '#about' },
-  { label: 'Cases',       href: '#cases' },
   { label: 'Partners',    href: '#partners' },
   { label: 'Services',    href: '#services' },
+  { label: 'Highlights',  href: '#case-highlight' },
 ];
 
 export default function Navbar() {
@@ -73,20 +73,29 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex flex-col leading-none group"
+            className="flex items-center gap-3 group"
             aria-label="PotuPartners Home"
           >
-            <span
-              className="font-serif text-xl font-light tracking-widest text-text-primary group-hover:text-gold transition-colors duration-300"
-              style={{ letterSpacing: '0.2em' }}
-            >
-              POTU
-            </span>
-            <span
-              className="font-serif text-[0.55rem] tracking-[0.45em] text-gold font-light"
-            >
-              PARTNERS
-            </span>
+            {/* PNG Logo Icon - replace 'logo.png' with your actual filename */}
+            <img 
+              src="/logo.png" 
+              alt="Potu Partners Logo" 
+              className="h-10 w-auto" 
+            />
+            {/* Text Logo - hidden on mobile */}
+            <div className="hidden md:flex flex-col leading-none">
+              <span
+                className="font-serif text-xl font-light tracking-widest text-text-primary group-hover:text-gold transition-colors duration-300"
+                style={{ letterSpacing: '0.2em' }}
+              >
+                POTU
+              </span>
+              <span
+                className="font-serif text-[0.55rem] tracking-[0.45em] text-gold font-light"
+              >
+                PARTNERS
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Nav */}

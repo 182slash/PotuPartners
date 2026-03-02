@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useReveal } from '@/hooks/useReveal';
 import { Scale, Briefcase, Building2, Globe2, FileText, Shield } from 'lucide-react';
 
@@ -61,7 +62,7 @@ export default function ServicesSection() {
         }}
       />
 
-      <div className="absolute right-0 top-0 section-number">VI</div>
+      <div className="absolute right-0 top-0 section-number">V</div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
 
@@ -73,21 +74,16 @@ export default function ServicesSection() {
           <div className="flex items-center gap-4 mb-6">
             <div className="h-px w-10 bg-gold opacity-60" />
             <span className="text-[0.65rem] tracking-[0.3em] uppercase text-gold font-sans font-light">
-              06 — Our Services
+              05 — Our Services
             </span>
           </div>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <h2
-              className="font-serif font-light text-text-primary leading-tight"
-              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
-            >
-              Practice areas built for{' '}
-              <span className="italic text-gold">complex mandates.</span>
-            </h2>
-            <p className="font-sans text-text-secondary text-sm font-light max-w-sm leading-relaxed">
-              Each practice area is led by a senior partner with specialist expertise, supported by a dedicated team of experienced associates.
-            </p>
-          </div>
+          <h2
+            className="font-serif font-light text-text-primary leading-tight"
+            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
+          >
+            Practice areas built for{' '}
+            <span className="italic text-gold">complex mandates.</span>
+          </h2>
         </div>
 
         {/* Service grid */}
@@ -135,24 +131,6 @@ export default function ServicesSection() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* CTA row */}
-        <div className="mt-16 border-t border-divider pt-12 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <h3 className="font-serif text-xl font-light text-text-primary mb-2">
-              Have a specific matter in mind?
-            </h3>
-            <p className="font-sans text-sm text-text-secondary font-light">
-              Speak with one of our associates for a confidential consultation.
-            </p>
-          </div>
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent('open-chat'))}
-            className="btn-gold px-10 flex-shrink-0"
-          >
-            <span>Begin a Conversation</span>
-          </button>
         </div>
 
       </div>

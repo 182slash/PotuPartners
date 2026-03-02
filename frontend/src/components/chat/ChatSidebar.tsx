@@ -9,7 +9,7 @@ export default function ChatSidebar() {
     conversations,
     activeId,
     unreadCounts,
-    setActiveConversation,
+    openConversationById,
     deleteConversation,
     currentUser,
     setStep,
@@ -51,7 +51,7 @@ export default function ChatSidebar() {
                 'group flex items-start gap-3 px-4 py-3.5 cursor-pointer border-b border-divider transition-all duration-200 hover:bg-surface-3 relative',
                 isActive && 'bg-surface-3 border-l-2 border-l-gold'
               )}
-              onClick={() => setActiveConversation(conv.id)}
+              onClick={() => openConversationById(conv.id)}
             >
               {/* Avatar */}
               <div className={cn(

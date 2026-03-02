@@ -8,21 +8,27 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // ─── Date formatting ──────────────────────────────────────────────────────────
-export function formatMessageTime(dateString: string): string {
+export function formatMessageTime(dateString: string | null | undefined): string {
+  if (!dateString) return '';
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
   return format(date, 'HH:mm');
 }
 
-export function formatConversationTime(dateString: string | null): string {
+export function formatConversationTime(dateString: string | null | undefined): string {
   if (!dateString) return '';
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
   if (isToday(date))     return format(date, 'HH:mm');
   if (isYesterday(date)) return 'Yesterday';
   return format(date, 'dd MMM');
 }
 
-export function formatRelativeTime(dateString: string): string {
-  return formatDistanceToNow(new Date(dateString), { addSuffix: true });
+export function formatRelativeTime(dateString: string | null | undefined): string {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+  return formatDistanceToNow(date, { addSuffix: true });
 }
 
 // ─── File utilities ───────────────────────────────────────────────────────────

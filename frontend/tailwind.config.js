@@ -50,6 +50,8 @@ module.exports = {
         'shimmer':       'shimmer 2s linear infinite',
         'float':         'float 6s ease-in-out infinite',
         'spin-slow':     'spin 8s linear infinite',
+        'ping-slow':     'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+        'bell-ring':     'bellRing 0.6s ease-in-out',
       },
       keyframes: {
         goldPulse: {
@@ -83,6 +85,15 @@ module.exports = {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%':      { transform: 'translateY(-8px)' },
+        },
+        bellRing: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '15%':      { transform: 'rotate(15deg)' },
+          '30%':      { transform: 'rotate(-12deg)' },
+          '45%':      { transform: 'rotate(10deg)' },
+          '60%':      { transform: 'rotate(-8deg)' },
+          '75%':      { transform: 'rotate(5deg)' },
+          '90%':      { transform: 'rotate(-3deg)' },
         },
       },
       backgroundImage: {

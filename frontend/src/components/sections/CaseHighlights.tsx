@@ -1,196 +1,161 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useReveal } from '@/hooks/useReveal';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
+import { Smartphone } from 'lucide-react';
 
-const CASES = [
+const HIGHLIGHTS = [
   {
-    id: 1,
-    area:       'Corporate Litigation',
-    title:      'Preservation of Controlling Interest',
-    outcome:    'Full defense verdict. Shareholder claims dismissed with prejudice.',
-    year:       '2023',
-    duration:   '14 months',
-    badge:      'Victory',
-    badgeColor: 'text-emerald-400 border-emerald-400/40 bg-emerald-400/5',
-    summary:    'Represented a principal shareholder in a multi-party derivative action challenging board resolutions. Secured dismissal at the appellate level.',
+    title: 'Jessica Iskandar & Vincent Verhaag',
+    subtitle: 'Fraud case experienced by Jessica Iskandar & Vincent Verhaag',
+    details: 'Legal problem occurred when Jessica Iskandar worked with her partner to conduct a luxury car rental business in Bali. Over time, Jessica Iskandar realized that the proof of transfer of profit sharing and investment money given to her business partner did not match the facts that occurred.',
+    imageUrl: '/case1.png',
   },
   {
-    id: 2,
-    area:       'Mergers & Acquisitions',
-    title:      'Cross-Border Acquisition Defense',
-    outcome:    'Transaction completed. Regulatory clearance obtained in 4 jurisdictions.',
-    year:       '2023',
-    duration:   '9 months',
-    badge:      'Completed',
-    badgeColor: 'text-gold border-gold/40 bg-gold/5',
-    summary:    'Advised acquiring entity on a $420M cross-border transaction involving regulatory submissions to financial authorities across multiple jurisdictions.',
+    title: 'Kerispatih Band',
+    subtitle: 'Copyright Issue between Kerispatih and Doadi Badai',
+    details: 'Rolland E Potu, S.H, M.H. as Attorney for the Kerispatih Band, issued an open letter of clarification aimed at responding to Doadi\'s instagram post.',
+    imageUrl: '/case2.png',
   },
   {
-    id: 3,
-    area:       'Arbitration',
-    title:      'International Commercial Dispute',
-    outcome:    '$18M award in favour of client. Enforcement confirmed.',
-    year:       '2022',
-    duration:   '22 months',
-    badge:      'Award Won',
-    badgeColor: 'text-gold border-gold/40 bg-gold/5',
-    summary:    'Lead counsel in ICC arbitration proceedings arising from a breach of a distribution agreement. Full quantum awarded with enforcement confirmed across two jurisdictions.',
-  },
-  {
-    id: 4,
-    area:       'Regulatory Affairs',
-    title:      'Licensing Reinstatement',
-    outcome:    'License reinstated. Operations resumed within 60 days.',
-    year:       '2022',
-    duration:   '4 months',
-    badge:      'Resolved',
-    badgeColor: 'text-sky-400 border-sky-400/40 bg-sky-400/5',
-    summary:    'Successfully challenged a regulatory authority\'s revocation order through administrative appeal, establishing precedent for due process rights in licensing proceedings.',
-  },
-  {
-    id: 5,
-    area:       'Real Estate',
-    title:      'Landmark Property Portfolio Restructure',
-    outcome:    'Restructuring approved. Debt extinguished by 62%.',
-    year:       '2021',
-    duration:   '11 months',
-    badge:      'Completed',
-    badgeColor: 'text-gold border-gold/40 bg-gold/5',
-    summary:    'Advised a real estate holding entity on the restructuring of a distressed portfolio of commercial properties, negotiating creditor agreements and securing court approval.',
-  },
-  {
-    id: 6,
-    area:       'Constitutional Law',
-    title:      'Freedom of Expression Challenge',
-    outcome:    'Regulatory provision declared unconstitutional.',
-    year:       '2021',
-    duration:   '18 months',
-    badge:      'Landmark',
-    badgeColor: 'text-purple-400 border-purple-400/40 bg-purple-400/5',
-    summary:    'Brought constitutional challenge on behalf of a media consortium against censorship provisions. High Court ruling established binding precedent.',
+    title: 'Mujiono',
+    subtitle: 'Mujiono Succeeded in Winning the Lawsuit & Case Object Executed',
+    details: 'After decades fighting for His rights as the legal heir and entitled to the inherited property that has been left behind by his parents. In 2021, Mujiono as the plaintiff represented by his legal authority, Potu & Partners Law Office has won the "Gugatan Perbuatan Melawan Hukum" at the Sidoarjo District Court. On October 3, 2023, Rolland E Potu, S.H., M.H. succeeded in escorting Mujiono\'s client in carrying out the execution of case objects totalling 10,000 m2 in Terik Village, Krian, Sidoarjo.',
+    imageUrl: '/case3.png',
   },
 ];
 
-export default function CasesSection() {
+export default function CaseHighlightSection() {
   const { ref: headRef, visible: headV } = useReveal<HTMLDivElement>();
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const { ref: gridRef, visible: gridV } = useReveal<HTMLDivElement>({ threshold: 0.1 });
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [installed, setInstalled]         = useState(false);
+  const [isIos, setIsIos]                 = useState(false);
+  const [showIosHint, setShowIosHint]     = useState(false);
 
-  const scroll = (dir: 'left' | 'right') => {
-    if (!scrollRef.current) return;
-    const amount = 400;
-    scrollRef.current.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
+  useEffect(() => {
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    setIsIos(ios);
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setInstalled(true);
+    }
+
+    const handler = (e: Event) => { e.preventDefault(); setInstallPrompt(e); };
+    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', () => setInstalled(true));
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    if (isIos) { setShowIosHint(v => !v); return; }
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') setInstalled(true);
+    setInstallPrompt(null);
   };
 
+  const showInstallBtn = !installed && (!!installPrompt || isIos);
+
   return (
-    <section id="cases" className="py-32 md:py-44 bg-surface relative overflow-hidden">
-
-      <div className="absolute right-0 top-0 section-number">IV</div>
-
+    <section id="case-highlight" className="py-32 md:py-44 bg-black relative overflow-hidden">
+      <div className="absolute right-0 top-0 section-number">VI</div>
       <div className="max-w-7xl mx-auto px-6">
-
         {/* Header */}
         <div
           ref={headRef}
-          className={`reveal ${headV ? 'visible' : ''} flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14`}
+          className={`reveal ${headV ? 'visible' : ''} mb-16`}
         >
-          <div>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="h-px w-10 bg-gold opacity-60" />
-              <span className="text-[0.65rem] tracking-[0.3em] uppercase text-gold font-sans font-light">
-                04 — Case Highlights
-              </span>
-            </div>
-            <h2
-              className="font-serif font-light text-text-primary leading-tight"
-              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
-            >
-              A record defined by{' '}
-              <span className="italic text-gold">decisive results.</span>
-            </h2>
-            <p className="font-sans text-text-secondary text-sm font-light mt-4 max-w-lg leading-relaxed">
-              The following highlights represent a selection of matters handled across our practice areas.
-              All identifying details have been anonymised.
-            </p>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-px w-10 bg-gold opacity-60" />
+            <span className="text-[0.65rem] tracking-[0.3em] uppercase text-gold font-sans font-light">
+              06 — Case Highlight
+            </span>
           </div>
-
-          {/* Scroll controls */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => scroll('left')}
-              className="p-2.5 border border-divider text-text-secondary hover:text-gold hover:border-gold-dim transition-all duration-200"
-              aria-label="Scroll left"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button
-              onClick={() => scroll('right')}
-              className="p-2.5 border border-divider text-text-secondary hover:text-gold hover:border-gold-dim transition-all duration-200"
-              aria-label="Scroll right"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
+          <h2
+            className="font-serif font-light text-text-primary leading-tight"
+            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
+          >
+            In the Public Eye: <span className="italic text-gold">High-Profile Representations.</span>
+          </h2>
+          <p className="font-sans text-text-secondary text-sm font-light mt-4 max-w-lg leading-relaxed">
+            A selection of our work on notable cases that have captured public and media attention.
+          </p>
         </div>
 
-        {/* Horizontal scrolling carousel */}
-        <div
-          ref={scrollRef}
-          className="flex gap-5 overflow-x-auto horizontal-scroll pb-6 -mx-6 px-6"
-          style={{ scrollSnapType: 'x mandatory' }}
-        >
-          {CASES.map((c, i) => (
+        {/* Cases Grid */}
+        <div ref={gridRef} className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 -mx-6 px-6 md:block md:space-y-20 md:pb-0 md:mx-0 md:px-0">
+          {HIGHLIGHTS.map((item, i) => (
             <div
-              key={c.id}
-              className="flex-shrink-0 w-80 md:w-96 card p-8 group cursor-default"
-              style={{ scrollSnapAlign: 'start', animationDelay: `${i * 60}ms` }}
+              key={item.title}
+              className={`reveal ${gridV ? 'visible' : ''} min-w-[85vw] md:min-w-0 snap-center grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center`}
+              style={{ transitionDelay: gridV ? `${i * 100}ms` : '0ms' }}
             >
-              {/* Area + year */}
-              <div className="flex items-center justify-between mb-6">
-                <span className="text-[0.6rem] tracking-[0.15em] uppercase text-gold opacity-70 font-sans">
-                  {c.area}
-                </span>
-                <span className="text-[0.6rem] text-text-muted font-sans">{c.year}</span>
+              <div className={`relative h-80 w-full group overflow-hidden border border-divider ${i % 2 !== 0 ? 'md:order-last' : ''}`}>
+                <Image
+                  src={item.imageUrl}
+                  alt={item.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/50 to-gold/20 transition-opacity duration-500 group-hover:opacity-0" />
               </div>
-
-              {/* Title */}
-              <h3 className="font-serif text-lg font-light text-text-primary mb-4 leading-snug">
-                {c.title}
-              </h3>
-
-              {/* Summary */}
-              <p className="font-sans text-xs text-text-secondary font-light leading-relaxed mb-6">
-                {c.summary}
-              </p>
-
-              {/* Gold divider */}
-              <div className="h-px mb-6" style={{ background: 'linear-gradient(90deg, rgba(198,167,94,0.3), transparent)' }} />
-
-              {/* Outcome */}
-              <p className="font-sans text-xs text-text-secondary font-light mb-5 leading-relaxed">
-                <span className="text-gold font-medium">Outcome:</span>{' '}
-                {c.outcome}
-              </p>
-
-              {/* Footer row */}
-              <div className="flex items-center justify-between">
-                <span className={`badge-gold text-[0.6rem] ${c.badgeColor}`}>
-                  {c.badge}
-                </span>
-                <span className="text-[0.65rem] text-text-muted font-sans">
-                  Duration: {c.duration}
-                </span>
+              <div>
+                <h3 className="font-serif text-2xl font-light text-text-primary mb-2">{item.title}</h3>
+                <p className="font-sans text-sm text-gold opacity-80 mb-4 italic">{item.subtitle}</p>
+                <div className="gold-rule mb-4 w-16" />
+                <p className="font-sans text-sm text-text-secondary font-light leading-relaxed">{item.details}</p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Disclaimer */}
-        <p className="font-sans text-[0.65rem] text-text-muted font-light mt-8 leading-relaxed">
-          * All case details have been anonymised to protect client confidentiality. Past results do not guarantee future outcomes.
-        </p>
+        {/* CTA row */}
+        <div className="mt-20 border-t border-divider pt-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="font-serif text-xl font-light text-text-primary mb-2">
+              Have a specific matter in mind?
+            </h3>
+            <p className="font-sans text-sm text-text-secondary font-light">
+              Speak with one of our associates for a confidential consultation.
+            </p>
+          </div>
+          <div className="flex flex-col items-center md:items-end gap-4 flex-shrink-0 w-full md:w-auto">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-chat'))}
+              className="btn-gold px-10 w-full md:w-auto flex justify-center items-center"
+            >
+              <span>Begin a Conversation</span>
+            </button>
 
+            {showInstallBtn && (
+              <div className="relative w-full md:w-auto">
+                <button
+                  onClick={handleInstall}
+                  className="btn-gold px-10 flex items-center justify-center gap-2 w-full md:w-auto"
+                >
+                  <Smartphone size={14} />
+                  <span>Install App</span>
+                </button>
+
+                {/* iOS tooltip */}
+                {showIosHint && (
+                  <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-64 bg-surface border border-gold-faint p-4 z-50 text-left">
+                    <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-surface border-l border-t border-gold-faint rotate-45" />
+                    <p className="font-sans text-xs text-text-secondary leading-relaxed">
+                      Tap the <span className="text-gold font-medium">Share</span> button in Safari, then select <span className="text-gold font-medium">"Add to Home Screen"</span> to install the app.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );

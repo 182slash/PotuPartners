@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { MessageSquare, X } from 'lucide-react';
+import { MessageSquare, X, Bell } from 'lucide-react';
 import { useChatStore } from '@/store/chatStore';
 import { cn } from '@/lib/utils';
 
@@ -28,21 +28,25 @@ export default function ChatButton() {
         'transition-all duration-300 shadow-gold',
         isOpen
           ? 'bg-surface-3 border border-divider hover:border-gold-dim'
-          : 'bg-gold-gradient border-0 animate-gold-pulse hover:shadow-gold-lg'
+          : 'bg-gold-gradient border-0 hover:shadow-gold-lg',
+        // Pulse animation only when unread and closed
+        !isOpen && totalUnread > 0 && 'animate-gold-pulse'
       )}
       aria-label={isOpen ? 'Close chat' : 'Open chat'}
       style={{ borderRadius: '2px' }}
     >
       {/* Unread badge */}
       {!isOpen && totalUnread > 0 && (
-        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center font-sans text-[0.6rem] font-medium text-white z-10">
+        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center font-sans text-[0.6rem] font-medium text-white z-10 animate-bounce">
           {totalUnread > 9 ? '9+' : totalUnread}
         </span>
       )}
 
       {isOpen
         ? <X size={18} className="text-text-secondary" />
-        : <MessageSquare size={18} className="text-black" />
+        : totalUnread > 0
+          ? <Bell size={18} className="text-black" />
+          : <MessageSquare size={18} className="text-black" />
       }
     </button>
   );

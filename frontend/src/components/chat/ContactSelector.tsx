@@ -1,14 +1,25 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Bot, UserRound, ChevronRight } from 'lucide-react';
+import { Bot, ChevronRight, Bell } from 'lucide-react';
 import { useChat } from '@/hooks/useChat';
+import { useChatStore } from '@/store/chatStore';
 import { getInitials, cn } from '@/lib/utils';
 
 export default function ContactSelector() {
-  const { staff, loadStaff, openConversation } = useChat();
+  const { staff, loadStaff, loadConversations, openConversation } = useChat();
+  const unread        = useChatStore(s => s.unreadCounts);
+  const conversations = useChatStore(s => s.conversations);
+  const setStep       = useChatStore(s => s.setStep);
 
-  useEffect(() => { loadStaff(); }, [loadStaff]);
+  const totalUnread      = Object.values(unread).reduce((a, b) => a + b, 0);
+  const showBell         = conversations.length > 0 || totalUnread > 0;
+
+  // Run once on mount only — empty deps prevents re-fire loop
+  useEffect(() => {
+    loadStaff();
+    loadConversations();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const associates = staff.filter(s => s.role === 'associate');
   const partners   = staff.filter(s => s.role === 'partner');
@@ -17,17 +28,56 @@ export default function ContactSelector() {
     await openConversation(id, isAi);
   };
 
+  const goToInbox = () => setStep('chat');
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
 
       {/* Header */}
       <div className="px-5 pt-5 pb-4 border-b border-divider flex-shrink-0">
-        <h2 className="font-serif text-lg font-light text-text-primary mb-1">
-          Start a Conversation
-        </h2>
-        <p className="font-sans text-xs text-text-secondary font-light">
-          Select who you would like to speak with.
-        </p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h2 className="font-serif text-lg font-light text-text-primary mb-1">
+              Start a Conversation
+            </h2>
+            <p className="font-sans text-xs text-text-secondary font-light">
+              Select who you would like to speak with.
+            </p>
+          </div>
+
+          {/* Notification bell */}
+          {showBell && (
+            <button
+              onClick={goToInbox}
+              className={cn(
+                'relative flex-shrink-0 ml-3 mt-0.5 w-8 h-8 flex items-center justify-center',
+                'border transition-all duration-200',
+                totalUnread > 0
+                  ? 'border-gold text-gold bg-gold/5 hover:bg-gold/10'
+                  : 'border-divider text-text-muted hover:border-gold-faint hover:text-gold'
+              )}
+              style={{ borderRadius: '2px' }}
+              aria-label="Open inbox"
+              title="View conversations"
+            >
+              {totalUnread > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center font-sans text-[0.55rem] font-medium text-white z-10">
+                  {totalUnread > 9 ? '9+' : totalUnread}
+                </span>
+              )}
+              {totalUnread > 0 && (
+                <span className="absolute inset-0 rounded-sm border border-gold opacity-0 animate-ping-slow" />
+              )}
+              <Bell
+                size={14}
+                className={cn(
+                  'transition-transform duration-200',
+                  totalUnread > 0 && 'animate-bell-ring'
+                )}
+              />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Scrollable list */}
@@ -76,7 +126,7 @@ export default function ContactSelector() {
         {/* Loading state */}
         {staff.length === 0 && (
           <div className="px-4 pt-2 space-y-2">
-            {[1,2,3].map(i => (
+            {[1, 2, 3].map(i => (
               <div key={i} className="flex items-center gap-3 p-3">
                 <div className="w-10 h-10 skeleton flex-shrink-0" />
                 <div className="flex-1 space-y-2">
@@ -87,14 +137,33 @@ export default function ContactSelector() {
             ))}
           </div>
         )}
-
       </div>
 
-      {/* Footer note */}
+      {/* Footer */}
       <div className="px-5 py-3 border-t border-divider flex-shrink-0">
-        <p className="font-sans text-[0.6rem] text-text-muted leading-relaxed">
-          All conversations are confidential and stored securely.
-        </p>
+        {showBell ? (
+          <div className="flex items-center justify-between">
+            <p className="font-sans text-[0.6rem] text-text-muted leading-relaxed">
+              All conversations are confidential and stored securely.
+            </p>
+            <button
+              onClick={goToInbox}
+              className="flex items-center gap-1 text-[0.6rem] text-gold hover:text-gold/80 font-sans tracking-wide transition-colors ml-3 flex-shrink-0"
+            >
+              {totalUnread > 0 && (
+                <span className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-[0.5rem] font-medium">
+                  {totalUnread > 9 ? '9+' : totalUnread}
+                </span>
+              )}
+              <span>INBOX</span>
+              <ChevronRight size={10} />
+            </button>
+          </div>
+        ) : (
+          <p className="font-sans text-[0.6rem] text-text-muted leading-relaxed">
+            All conversations are confidential and stored securely.
+          </p>
+        )}
       </div>
     </div>
   );
@@ -129,7 +198,6 @@ function StaffGroup({
                   {getInitials(m.fullName)}
                 </span>
               )}
-              {/* Online indicator */}
               <span
                 className={cn(
                   'absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-black',

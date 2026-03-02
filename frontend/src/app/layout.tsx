@@ -4,11 +4,11 @@ import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
   title: {
-    default: 'PotuPartners | Premier Law Firm',
+    default: 'PotuPartners | Exelence Without Compromise',
     template: '%s | PotuPartners',
   },
   description:
-    'PotuPartners is a premier law firm committed to delivering exceptional legal counsel with integrity, discretion, and uncompromising excellence.',
+    'PotuPartners is a Top-tier law firm committed to delivering exceptional legal counsel with integrity, discretion, and uncompromising excellence.',
   keywords: [
     'law firm', 'legal services', 'attorneys', 'partners', 'corporate law',
     'litigation', 'legal counsel', 'PotuPartners',
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://potupartners.site',
     siteName: 'PotuPartners',
-    title: 'PotuPartners | Premier Law Firm',
+    title: 'PotuPartners | Top-tier Law Firm',
     description:
-      'Premier legal counsel delivered with integrity, discretion, and uncompromising excellence.',
+      'Top-tier legal counsel delivered with integrity, discretion, and uncompromising excellence.',
     images: [
       {
         url: '/og-image.jpg',
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PotuPartners | Premier Law Firm',
-    description: 'Premier legal counsel delivered with integrity and excellence.',
+    title: 'PotuPartners | Top-tier Law Firm',
+    description: 'Top-tier legal counsel delivered with integrity and excellence.',
     images: ['/og-image.jpg'],
   },
   manifest: '/manifest.json',

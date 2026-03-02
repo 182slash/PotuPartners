@@ -5,15 +5,15 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL ?? 'https://api.potupartne
 let socket: Socket | null = null;
 
 export function getSocket(accessToken: string): Socket {
-  if (!socket || !socket.connected) {
+  if (!socket) {
     socket = io(`${SOCKET_URL}/chat`, {
-      autoConnect: false,
-      transports: ['websocket', 'polling'],
-      auth: { token: accessToken },
-      reconnection:        true,
+      autoConnect:          false,
+      transports:           ['websocket', 'polling'],
+      auth:                 { token: accessToken },
+      reconnection:         true,
       reconnectionAttempts: 10,
-      reconnectionDelay:   1000,
-      reconnectionDelayMax: 8000,
+      reconnectionDelay:    2000,
+      reconnectionDelayMax: 10000,
     });
   }
   return socket;
@@ -30,7 +30,6 @@ export function getExistingSocket(): Socket | null {
   return socket;
 }
 
-// ─── Typed event helpers ──────────────────────────────────────────────────────
 export const SocketEvents = {
   // Emit
   JOIN_CONVERSATION:   'join_conversation',

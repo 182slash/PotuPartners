@@ -1,0 +1,17 @@
+Hostinger IP
+46.202.186.232
+
+#deploy to hostinger
+scp -P 65002 -r X:\Project\PotuPartners\frontend\out\* u665544659@46.202.186.232:/home/u665544659/domains/potupartners.site/public_html/
+
+
+PotuPartners-api
+165.245.185.246
+
+ssh potupartners@165.245.185.246
+
+#refresh service server
+pm2 reload potupartners-api
+
+#build on backend-server
+npm run build && pm2 reload potupartners-api

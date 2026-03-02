@@ -7,17 +7,22 @@ import { useAuthStore } from '@/store/authStore';
 import type { Message } from '@/types';
 
 export function useSocket() {
-  const accessToken = useAuthStore(s => s.accessToken);
-  const addMessage   = useChatStore(s => s.addMessage);
-  const deleteMessage = useChatStore(s => s.deleteMessage);
-  const setTyping    = useChatStore(s => s.setTyping);
-  const clearTyping  = useChatStore(s => s.clearTyping);
+  const accessToken     = useAuthStore(s => s.accessToken);
+  const addMessage      = useChatStore(s => s.addMessage);
+  const deleteMessage   = useChatStore(s => s.deleteMessage);
+  const setTyping       = useChatStore(s => s.setTyping);
+  const clearTyping     = useChatStore(s => s.clearTyping);
   const incrementUnread = useChatStore(s => s.incrementUnread);
-  const activeId     = useChatStore(s => s.activeId);
+  const activeId        = useChatStore(s => s.activeId);
 
-  const socketRef = useRef<ReturnType<typeof getSocket> | null>(null);
+  const socketRef   = useRef<ReturnType<typeof getSocket> | null>(null);
+  const activeIdRef = useRef<string | null>(activeId);
 
-  const connect = useCallback(() => {
+  useEffect(() => {
+    activeIdRef.current = activeId;
+  }, [activeId]);
+
+  useEffect(() => {
     if (!accessToken) return;
 
     const socket = getSocket(accessToken);
@@ -25,15 +30,25 @@ export function useSocket() {
 
     if (!socket.connected) socket.connect();
 
-    socket.on(SocketEvents.NEW_MESSAGE, (msg: Message) => {
-      addMessage(msg.conversationId, msg);
-      if (msg.conversationId !== activeId) {
-        incrementUnread(msg.conversationId);
+    socket.off(SocketEvents.NEW_MESSAGE);
+    socket.off(SocketEvents.MESSAGE_DELETED);
+    socket.off(SocketEvents.USER_TYPING);
+    socket.off(SocketEvents.USER_STOPPED_TYPING);
+
+    socket.on(SocketEvents.NEW_MESSAGE, (msg: any) => {
+      console.log('[Socket] NEW_MESSAGE received:', msg);
+      const conversationId = msg.conversationId ?? msg.conversation_id;
+      if (!conversationId) return;
+      addMessage(conversationId, { ...msg, conversationId });
+      if (conversationId !== activeIdRef.current) {
+        incrementUnread(conversationId);
       }
     });
 
-    socket.on(SocketEvents.MESSAGE_DELETED, ({ messageId, conversationId }: { messageId: string; conversationId: string }) => {
-      deleteMessage(conversationId, messageId);
+    socket.on(SocketEvents.MESSAGE_DELETED, (data: any) => {
+      const conversationId = data.conversationId ?? data.conversation_id;
+      const messageId      = data.messageId      ?? data.message_id;
+      if (conversationId && messageId) deleteMessage(conversationId, messageId);
     });
 
     socket.on(SocketEvents.USER_TYPING, ({ userId, userName, conversationId }: { userId: string; userName: string; conversationId: string }) => {
@@ -44,19 +59,13 @@ export function useSocket() {
       clearTyping(conversationId, userId);
     });
 
-    return socket;
-  }, [accessToken, addMessage, deleteMessage, setTyping, clearTyping, incrementUnread, activeId]);
-
-  useEffect(() => {
-    if (!accessToken) return;
-    const socket = connect();
     return () => {
-      socket?.off(SocketEvents.NEW_MESSAGE);
-      socket?.off(SocketEvents.MESSAGE_DELETED);
-      socket?.off(SocketEvents.USER_TYPING);
-      socket?.off(SocketEvents.USER_STOPPED_TYPING);
+      socket.off(SocketEvents.NEW_MESSAGE);
+      socket.off(SocketEvents.MESSAGE_DELETED);
+      socket.off(SocketEvents.USER_TYPING);
+      socket.off(SocketEvents.USER_STOPPED_TYPING);
     };
-  }, [accessToken, connect]);
+  }, [accessToken, addMessage, deleteMessage, setTyping, clearTyping, incrementUnread]);
 
   const joinConversation = useCallback((conversationId: string) => {
     socketRef.current?.emit(SocketEvents.JOIN_CONVERSATION, { conversationId });

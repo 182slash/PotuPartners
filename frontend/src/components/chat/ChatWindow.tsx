@@ -39,12 +39,10 @@ export default function ChatWindow() {
   const otherPerson = conv?.clientId === currentUser?.id ? conv?.participant : conv?.client;
   const chatName = isAiChat ? 'PotuPartners AI' : (otherPerson?.displayName ?? otherPerson?.fullName ?? 'Conversation');
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [msgs.length, typing.length, aiThinking]);
 
-  // Mark as read when viewing
   useEffect(() => {
     if (activeId) markRead?.(activeId);
   }, [activeId, msgs.length]);
@@ -52,7 +50,6 @@ export default function ChatWindow() {
   const handleSend = useCallback(() => {
     const content = inputValue.trim();
     if (!content && !pendingFile) return;
-
     sendMessage(content, pendingFile?.id);
     setInputValue('');
     setPendingFile(null);
@@ -70,8 +67,6 @@ export default function ChatWindow() {
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
     handleTyping();
-
-    // Auto-resize textarea
     e.target.style.height = 'auto';
     e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
   };
@@ -90,7 +85,6 @@ export default function ChatWindow() {
           <ArrowLeft size={16} />
         </button>
 
-        {/* Avatar */}
         <div className={cn(
           'w-8 h-8 flex-shrink-0 border flex items-center justify-center',
           isAiChat ? 'border-gold-faint bg-gold/5' : 'border-divider'
@@ -103,7 +97,6 @@ export default function ChatWindow() {
           }
         </div>
 
-        {/* Name & status */}
         <div className="flex-1 min-w-0">
           <p className="font-sans text-sm text-text-primary font-light truncate">{chatName}</p>
           {isAiChat ? (
@@ -119,7 +112,6 @@ export default function ChatWindow() {
           )}
         </div>
 
-        {/* Delete conversation */}
         <button
           onClick={() => activeId && deleteConversation(activeId)}
           className="p-1.5 text-text-muted hover:text-red-400 transition-colors"
@@ -151,23 +143,24 @@ export default function ChatWindow() {
           </div>
         )}
 
-        {msgs.map(msg => (
-          <MessageBubble
-            key={msg.id}
-            message={msg}
-            isOwn={msg.senderId === currentUser?.id}
-            isAiBot={msg.senderId === null && msg.messageType !== 'file'}
-            onDelete={deleteMessage}
-            canDelete={msg.senderId === currentUser?.id}
-          />
-        ))}
+        {msgs.map(msg => {
+          const senderId = msg.senderId ?? (msg as any).sender_id;
+          return (
+            <MessageBubble
+              key={msg.id}
+              message={msg}
+              isOwn={senderId === currentUser?.id}
+              isAiBot={senderId === null && msg.messageType !== 'file'}
+              onDelete={deleteMessage}
+              canDelete={senderId === currentUser?.id}
+            />
+          );
+        })}
 
-        {/* Typing indicator */}
         {typing.map(t => (
           <TypingIndicator key={t.userId} name={t.userName} />
         ))}
 
-        {/* AI thinking indicator */}
         {aiThinking && (
           <div className="flex items-end gap-2">
             <div className="w-7 h-7 border border-gold-faint bg-gold/5 flex items-center justify-center">
@@ -215,7 +208,6 @@ export default function ChatWindow() {
       {/* Input bar */}
       <div className="px-4 pb-4 flex-shrink-0">
         <div className="flex items-end gap-2 border border-divider bg-surface-2 focus-within:border-gold-dim transition-colors duration-200">
-          {/* Attach */}
           <button
             onClick={() => setShowUpload(v => !v)}
             className={cn(
@@ -227,7 +219,6 @@ export default function ChatWindow() {
             <Paperclip size={15} />
           </button>
 
-          {/* Textarea */}
           <textarea
             ref={inputRef}
             value={inputValue}
@@ -239,7 +230,6 @@ export default function ChatWindow() {
             style={{ minHeight: '44px', maxHeight: '120px' }}
           />
 
-          {/* Send */}
           <button
             onClick={handleSend}
             disabled={!inputValue.trim() && !pendingFile}

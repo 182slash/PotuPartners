@@ -6,7 +6,7 @@ from app.services.embedder import get_openai_client
 logger = structlog.get_logger(__name__)
 settings = get_settings()
 
-SYSTEM_PROMPT = """You are a professional legal assistant for PotuPartners, a premier law firm.
+SYSTEM_PROMPT = """You are a professional legal assistant for PotuPartners, a Top-tier law firm.
 
 Your role is to answer questions from clients using ONLY the information provided in the retrieved context below. You must:
 

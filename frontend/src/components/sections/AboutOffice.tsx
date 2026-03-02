@@ -1,12 +1,20 @@
 'use client';
 
 import { useReveal } from '@/hooks/useReveal';
+import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 
 const STATS = [
-  { value: '28+', label: 'Years of Practice' },
+  { value: '10+', label: 'Years of Practice' },
   { value: '400+', label: 'Cases Won' },
-  { value: '12',   label: 'Senior Partners' },
+  { value: '4',   label: 'Senior Partners' },
   { value: '6',    label: 'Practice Areas' },
+];
+
+const SOCIALS = [
+  { name: 'Facebook',  href: 'https://www.facebook.com/share/1AzBkbF7nX/?mibextid=wwXIfr',  icon: Facebook },
+  { name: 'Instagram', href: 'https://www.instagram.com/potupartners?igsh=MTBhYzEyeHU5NnFqOA==', icon: Instagram },
+  { name: 'Twitter',   href: 'https://x.com/potupartners?s=11&t=sw-0qLGvFCGtvd6erCLotQ',   icon: Twitter },
+  { name: 'LinkedIn',  href: 'https://www.linkedin.com/in/potupartnerslawoffice?utm_source=share_via&utm_content=profile&utm_medium=member_ios',  icon: Linkedin },
 ];
 
 export default function AboutSection() {
@@ -50,7 +58,7 @@ export default function AboutSection() {
           <div className={`reveal ${bodyV ? 'visible' : ''} lg:col-span-3 space-y-6`}>
             <p className="font-sans text-text-secondary text-base font-light leading-relaxed">
               Founded in the tradition of rigorous legal excellence, PotuPartners has grown into
-              a premier institution serving clients across complex commercial, corporate, and
+              a Top-tier institution serving clients across complex commercial, corporate, and
               constitutional matters. Our practice is defined not by volume, but by the calibre of
               counsel we bring to every engagement.
             </p>
@@ -78,53 +86,49 @@ export default function AboutSection() {
           </div>
 
           {/* Image / visual column — 2 cols */}
-          <div className={`reveal-right ${bodyV ? 'visible' : ''} lg:col-span-2`}>
+          <div className={`reveal-right ${bodyV ? 'visible' : ''} lg:col-span-2 flex flex-col h-full`}>
             {/* Placeholder for office imagery */}
             <div
-              className="relative h-80 lg:h-full min-h-64 border border-divider overflow-hidden group"
+              className="relative h-80 lg:flex-1 min-h-64 border border-divider overflow-hidden group"
             >
-              {/* Layered gradient — evokes a prestigious interior */}
-              <div
-                className="absolute inset-0"
+              <iframe
+                src="https://maps.google.com/maps?q=Potu+%26+Partners+Law+Office+Surabaya&t=m&z=15&output=embed&iwloc=near"
+                title="Potu Partners Office Location"
+                className="absolute inset-0 w-full h-full transition-opacity duration-500 opacity-60 group-hover:opacity-80"
                 style={{
-                  background: `
-                    linear-gradient(135deg,
-                      rgba(198,167,94,0.03) 0%,
-                      rgba(0,0,0,0.7) 40%,
-                      rgba(20,20,20,0.9) 100%
-                    )
-                  `,
+                  border: 0,
+                  filter: 'grayscale(100%) invert(100%) sepia(100%) saturate(150%) contrast(1.1) brightness(0.9)',
                 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
-              {/* Abstract architectural lines */}
-              <svg
-                className="absolute inset-0 w-full h-full opacity-10"
-                viewBox="0 0 400 300"
-                preserveAspectRatio="xMidYMid slice"
-              >
-                <line x1="0" y1="300" x2="400" y2="0"   stroke="#C6A75E" strokeWidth="0.5"/>
-                <line x1="50" y1="300" x2="400" y2="50"  stroke="#C6A75E" strokeWidth="0.5"/>
-                <line x1="0" y1="200" x2="300" y2="0"   stroke="#C6A75E" strokeWidth="0.5"/>
-                <rect x="60" y="50" width="280" height="200" fill="none" stroke="#C6A75E" strokeWidth="0.5"/>
-                <rect x="80" y="70" width="240" height="160" fill="none" stroke="#C6A75E" strokeWidth="0.3"/>
-              </svg>
-
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="font-serif text-5xl font-light text-gold opacity-20 select-none">
-                  PP
-                </div>
-                <div className="h-px w-16 bg-gold opacity-20 mt-3" />
-                <p className="text-text-muted text-xs tracking-[0.3em] uppercase mt-3 font-sans">
-                  Est. Founded
-                </p>
-              </div>
 
               {/* Hover reveal */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent">
-                <p className="font-sans text-xs text-text-secondary font-light">
-                  One Commerce Square, 18th Floor
-                </p>
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
+                <a
+                  href="https://maps.app.goo.gl/bu4Kxfyus72ACyqW6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-sans text-xs text-text-secondary font-light hover:text-gold transition-colors"
+                >
+                  Ruko Mall 9K Puncak CBD. Surabaya
+                </a>
               </div>
+            </div>
+            <div className="mt-4 flex items-center gap-4">
+              {SOCIALS.map(social => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
+                  className="text-gold/70 hover:text-gold hover:filter-[drop-shadow(0_0_4px_rgba(212,175,55,0.7))] transition-all duration-300"
+                >
+                  <social.icon size={18} />
+                </a>
+              ))}
             </div>
           </div>
         </div>

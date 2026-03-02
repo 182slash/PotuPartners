@@ -1,3 +1,4 @@
+// frontend/src/app/admin/page.tsx
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -515,7 +516,8 @@ export default function AdminPage() {
           {activeTab === 'dashboard' && <DashboardTab />}
           {activeTab === 'documents' && <DocumentsTab />}
           {activeTab === 'users'     && <UsersTab />}
-          {activeTab === 'chats'     && (
+
+          {activeTab === 'chats' && (
             <div className="text-center py-20">
               <MessageSquare size={32} className="text-text-muted mx-auto mb-4 opacity-30" />
               <p className="font-serif text-lg font-light text-text-muted">Chat monitor coming in Phase 3</p>

@@ -17,24 +17,33 @@ export default function ChatPanel() {
   const step      = useChatStore(s => s.step);
   const activeId  = useChatStore(s => s.activeId);
   const convs     = useChatStore(s => s.conversations);
-  const user      = useAuthStore(s => s.user);
-  const { loadConversations } = useChat();
+  const userId    = useAuthStore(s => s.user?.id);
+
+  const { loadConversations, joinConversation } = useChat();
 
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Load conversations when chat opens and user is authenticated
+  // Load conversations once when chat opens and user is authenticated
   useEffect(() => {
-    if (isOpen && user) loadConversations();
-  }, [isOpen, user]);
+    if (isOpen && userId) loadConversations();
+  }, [isOpen, userId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Join all conversation rooms whenever the list grows
+  useEffect(() => {
+    if (userId && convs.length > 0) {
+      convs.forEach(c => joinConversation(c.id));
+    }
+  }, [convs.length, userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Escape key to close
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') closeChat(); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeChat();
+    };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [closeChat]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Show sidebar if there are existing conversations
   const showSidebar = convs.length > 0 && step === 'chat';
 
   return (
@@ -54,13 +63,9 @@ export default function ChatPanel() {
         ref={panelRef}
         className={cn(
           'fixed z-50 bg-surface border border-divider shadow-xl transition-all duration-500',
-          // Mobile: full-screen slide from bottom
           'bottom-0 left-0 right-0 h-[92vh]',
-          // Desktop: floating panel bottom-right
-          'md:bottom-24 md:left-auto md:right-6 md:w-[480px] md:h-[680px]',
-          isOpen
-            ? 'translate-y-0 opacity-100 pointer-events-auto'
-            : 'translate-y-full md:translate-y-8 opacity-0 pointer-events-none'
+          'md:bottom-24 md:left-auto md:right-6 md:w-[580px] md:h-[680px]',
+          isOpen ? 'translate-y-0 opacity-100 pointer-events-auto' : 'translate-y-full md:translate-y-8 opacity-0 pointer-events-none'
         )}
         style={{ borderRadius: '2px' }}
       >
@@ -90,23 +95,17 @@ export default function ChatPanel() {
 
         {/* Content */}
         <div className="flex-1 overflow-hidden" style={{ height: 'calc(100% - 57px)' }}>
-          {!user ? (
+          {!userId ? (
             <AuthGate />
           ) : (
             <div className="flex h-full">
-              {/* Sidebar (desktop only when there are conversations) */}
               {showSidebar && (
-                <div className="hidden md:flex flex-col w-44 border-r border-divider overflow-hidden">
+                <div className="hidden md:flex flex-col w-40 border-r border-divider overflow-hidden">
                   <ChatSidebar />
                 </div>
               )}
-
-              {/* Main area */}
               <div className="flex-1 flex flex-col overflow-hidden">
-                {step === 'select' || !activeId
-                  ? <ContactSelector />
-                  : <ChatWindow />
-                }
+                {step === 'select' || !activeId ? <ContactSelector /> : <ChatWindow />}
               </div>
             </div>
           )}

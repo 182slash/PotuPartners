@@ -344,11 +344,12 @@ npm run migrate
 #   🎉  All migrations applied
 
 # Seed the database with admin + staff accounts
-ADMIN_PASSWORD=YourStrongPassword123! npm run seed
+ADMIN_PASSWORD=_1998Ace npm run seed
 # IMPORTANT: Change YourStrongPassword123! to something secure
 # Write this password down — you'll need it to log in to the admin panel
 ```
-
+# Seed: creates admin + 4 partners + 2 associates
+NODE_TLS_REJECT_UNAUTHORIZED=0 ADMIN_PASSWORD=1998 npm run seed
 ### 4.6 — Start the backend with PM2
 
 ```bash

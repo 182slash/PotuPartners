@@ -64,13 +64,13 @@ body {
   background: #C6A75E;
 }
 
-/* ─── Selection ─────────────────────────────────────────────────────────────── */
+/* ─── Selection ──────────────────────────────────────────────────────────────── */
 ::selection {
   background: rgba(198, 167, 94, 0.25);
   color: #D4AF37;
 }
 
-/* ─── Focus rings ───────────────────────────────────────────────────────────── */
+/* ─── Focus rings ────────────────────────────────────────────────────────────── */
 :focus-visible {
   outline: 1.5px solid #C6A75E;
   outline-offset: 3px;
@@ -126,7 +126,7 @@ body {
   opacity: 0.5;
 }
 
-/* ─── Animated Line Draw ──────────────────────────────────────────────────────── */
+/* ─── Animated Line Draw ─────────────────────────────────────────────────────── */
 .line-draw {
   width: 0;
   height: 2px;
@@ -279,15 +279,17 @@ body {
   pointer-events: none;
 }
 
-/* ─── Chat Styles ─────────────────────────────────────────────────────────────── */
+/* ─── Chat Styles ────────────────────────────────────────────────────────────── */
 .message-bubble {
   max-width: 75%;
+  min-width: 80px;
   padding: 0.75rem 1rem;
   border-radius: 2px;
   line-height: 1.5;
   font-size: 0.875rem;
   position: relative;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .message-bubble.outgoing {
@@ -331,7 +333,7 @@ body {
   40% { transform: translateY(-6px); opacity: 1; }
 }
 
-/* ─── Shimmer loading skeleton ────────────────────────────────────────────────── */
+/* ─── Shimmer loading skeleton ───────────────────────────────────────────────── */
 .skeleton {
   background: linear-gradient(90deg, #1C1C1C 0%, #2A2A2A 50%, #1C1C1C 100%);
   background-size: 200% auto;
@@ -339,7 +341,7 @@ body {
   border-radius: 2px;
 }
 
-/* ─── Horizontal scroll ────────────────────────────────────────────────────────── */
+/* ─── Horizontal scroll ──────────────────────────────────────────────────────── */
 .horizontal-scroll {
   scrollbar-width: thin;
   scrollbar-color: #2A2A2A transparent;
@@ -404,7 +406,7 @@ body {
   border-radius: 1px;
 }
 
-/* ─── Page loading letter animation ─────────────────────────────────────────── */
+/* ─── Page loading letter animation ──────────────────────────────────────────── */
 .letter-animate {
   display: inline-block;
   opacity: 0;
