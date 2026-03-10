@@ -34,6 +34,8 @@ export function useSocket() {
     socket.off(SocketEvents.MESSAGE_DELETED);
     socket.off(SocketEvents.USER_TYPING);
     socket.off(SocketEvents.USER_STOPPED_TYPING);
+    socket.off(SocketEvents.AI_THINKING);
+    socket.off(SocketEvents.AI_RESPONSE);
 
     socket.on(SocketEvents.NEW_MESSAGE, (msg: any) => {
       console.log('[Socket] NEW_MESSAGE received:', msg);
@@ -59,11 +61,24 @@ export function useSocket() {
       clearTyping(conversationId, userId);
     });
 
+    socket.on(SocketEvents.AI_THINKING, () => {
+      console.log('[Socket] AI_THINKING received');
+    });
+
+    socket.on(SocketEvents.AI_RESPONSE, (msg: any) => {
+      console.log('[Socket] AI_RESPONSE received:', msg);
+      const conversationId = msg.conversationId ?? msg.conversation_id;
+      if (!conversationId) return;
+      addMessage(conversationId, { ...msg, conversationId });
+    });
+
     return () => {
       socket.off(SocketEvents.NEW_MESSAGE);
       socket.off(SocketEvents.MESSAGE_DELETED);
       socket.off(SocketEvents.USER_TYPING);
       socket.off(SocketEvents.USER_STOPPED_TYPING);
+      socket.off(SocketEvents.AI_THINKING);
+      socket.off(SocketEvents.AI_RESPONSE);
     };
   }, [accessToken, addMessage, deleteMessage, setTyping, clearTyping, incrementUnread]);
 

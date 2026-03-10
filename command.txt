@@ -15,3 +15,11 @@ pm2 reload potupartners-api
 
 #build on backend-server
 npm run build && pm2 reload potupartners-api
+
+cd /opt/potupartners/rag-service
+source venv/bin/activate
+
+
+psql "postgresql://arsavael:AVNS_eGzxhOsbsAZjbMwdv2K@potupartners-db-do-user-33479038-0.h.db.ondigitalocean.com:25060/potupartners-db?sslmode=require"
+
+GPT API-Key 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

@@ -680,7 +680,7 @@ function GlobeEtching() {
 
 function ScalesOfJusticeMobile({ style }: { style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" width={220} height={130} aria-hidden="true" style={style}>
+    <svg viewBox="-30 -20 460 310" xmlns="http://www.w3.org/2000/svg" width={240} height={150} aria-hidden="true" style={style}>
       <defs>
         <linearGradient id="goldGradMobile" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%"   stopColor="#C6A75E" />
@@ -689,11 +689,11 @@ function ScalesOfJusticeMobile({ style }: { style?: React.CSSProperties }) {
           <animate attributeName="x1" values="0%;100%;0%" dur="3s" repeatCount="indefinite" />
           <animate attributeName="x2" values="100%;200%;100%" dur="3s" repeatCount="indefinite" />
         </linearGradient>
-        <filter id="glowMobile" x="-20%" y="-20%" width="140%" height="140%">
+        <filter id="glowMobile" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="3" result="coloredBlur" />
           <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
-        <filter id="strongGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <filter id="strongGlow" x="-60%" y="-60%" width="220%" height="220%">
           <feGaussianBlur stdDeviation="5" result="coloredBlur" />
           <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
